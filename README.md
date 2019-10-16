@@ -40,4 +40,15 @@ F10 = salir inmediatamente del juego
 
 ## Screenshoots
 
+![ScreenShot](/screenshots/1.jpg)
+
+![ScreenShot](/screenshots/2.jpg)
+
+![ScreenShot](/screenshots/3.jpg)
+
+![ScreenShot](/screenshots/4.jpg)
+
+![ScreenShot](/screenshots/5.jpg)
+
+
 
