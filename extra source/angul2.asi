@@ -1,0 +1,380 @@
+REM Version para ASIC v5.00 - OPTIMIZADA
+REM GRAFICANDO UN ANGULO 28/10/97 18:14 a 30/10/97 21:38 pm
+REM POR AGF
+REM Version MUY MEJORADA; USANDO EL CIRCULO TRIGONOMETRICO
+REM     /+
+REM  H / |  <-- TRIANGULO RECTANGULO: H=HIPOTENUSA; O=CAT. OPUESTO
+REM   /  |O                           A=CAT. ADYACENTE | G=ANGULO
+REM  /G  |
+REM  +---+
+REM    A
+REM 
+REM SENO [G] = OPUESTO / HIP  | TANGENTE [G] = OPUESTO / ADYACENTE
+REM COS  [G] = ADYACENTE / HIP
+REM 
+REM 
+REM  LA RUTINA NECESITA UNA COORDENADA X, Y; UN ANGULO, Y UNA LONGITUD.
+REM  CALCULA POR PASAJE DE TERMINOS LAS COORDENADAS X2, Y2 Y LO GRAFICA.
+REM 
+REM EL SENO * LARGO TANGENTE=> LARGO CAT. OP.
+REM EL COS * LARGO TANGENTE=>  LARGO CAT. AD.
+REM 
+REM datos necesarios para los angulos
+DIM SIN@(90)
+DIM COS@(90)
+COS@(0)=1
+COS@(1)=.99984
+COS@(2)=.99939
+COS@(3)=.99862
+COS@(4)=.99756
+COS@(5)=.99619
+COS@(6)=.99452
+COS@(7)=.99254
+COS@(8)=.99026
+COS@(9)=.98768
+COS@(10)=.98480
+COS@(11)=.98162
+COS@(12)=.97814
+COS@(13)=.97437
+COS@(14)=.97029
+COS@(15)=.96592
+COS@(16)=.96126
+COS@(17)=.95630
+COS@(18)=.95105
+COS@(19)=.94551
+COS@(20)=.93969
+COS@(21)=.93358
+COS@(22)=.92718
+COS@(23)=.92050
+COS@(24)=.91354
+COS@(25)=.90630
+COS@(26)=.89879
+COS@(27)=.89100
+COS@(28)=.88294
+COS@(29)=.87461
+COS@(30)=.86602
+COS@(31)=.85716
+COS@(32)=.84804
+COS@(33)=.83867
+COS@(34)=.82903
+COS@(35)=.81915
+COS@(36)=.80901
+COS@(37)=.79863
+COS@(38)=.78801
+COS@(39)=.77714
+COS@(40)=.76604
+COS@(41)=.75470
+COS@(42)=.74314
+COS@(43)=.73135
+COS@(44)=.71933
+COS@(45)=.70710
+COS@(46)=.69465
+COS@(47)=.68199
+COS@(48)=.66913
+COS@(49)=.65605
+COS@(50)=.64278
+COS@(51)=.62932
+COS@(52)=.61566
+COS@(53)=.60181
+COS@(54)=.58778
+COS@(55)=.57357
+COS@(56)=.55919
+COS@(57)=.54463
+COS@(58)=.52991
+COS@(59)=.51503
+COS@(60)=.5
+COS@(61)=.48480
+COS@(62)=.46947
+COS@(63)=.45399
+COS@(64)=.43837
+COS@(65)=.42261
+COS@(66)=.40673
+COS@(67)=.39073
+COS@(68)=.37460
+COS@(69)=.35836
+COS@(70)=.34202
+COS@(71)=.32556
+COS@(72)=.30901
+COS@(73)=.29237
+COS@(74)=.27563
+COS@(75)=.25881
+COS@(76)=.24192
+COS@(77)=.22495
+COS@(78)=.20791
+COS@(79)=.19080
+COS@(80)=.17364
+COS@(81)=.15643
+COS@(82)=.13917
+COS@(83)=.12186
+COS@(84)=.10452
+COS@(85)=.08715
+COS@(86)=.06975
+COS@(87)=.05233
+COS@(88)=.03489
+COS@(89)=.01745
+COS@(90)=-.0000
+SIN@(0)=0
+SIN@(1)=.01745
+SIN@(2)=.03489
+SIN@(3)=.05233
+SIN@(4)=.06975
+SIN@(5)=.08715
+SIN@(6)=.10452
+SIN@(7)=.12186
+SIN@(8)=.13917
+SIN@(9)=.15643
+SIN@(10)=.17364
+SIN@(11)=.19080
+SIN@(12)=.20791
+SIN@(13)=.22495
+SIN@(14)=.24192
+SIN@(15)=.25881
+SIN@(16)=.27563
+SIN@(17)=.29237
+SIN@(18)=.30901
+SIN@(19)=.32556
+SIN@(20)=.34202
+SIN@(21)=.35836
+SIN@(22)=.37460
+SIN@(23)=.39073
+SIN@(24)=.40673
+SIN@(25)=.42261
+SIN@(26)=.43837
+SIN@(27)=.45399
+SIN@(28)=.46947
+SIN@(29)=.48480
+SIN@(30)=.5
+SIN@(31)=.51503
+SIN@(32)=.52991
+SIN@(33)=.54463
+SIN@(34)=.55919
+SIN@(35)=.57357
+SIN@(36)=.58778
+SIN@(37)=.60181
+SIN@(38)=.61566
+SIN@(39)=.62932
+SIN@(40)=.64278
+SIN@(41)=.65605
+SIN@(42)=.66913
+SIN@(43)=.68199
+SIN@(44)=.69465
+SIN@(45)=.70710
+SIN@(46)=.71933
+SIN@(47)=.73135
+SIN@(48)=.74314
+SIN@(49)=.75470
+SIN@(50)=.76604
+SIN@(51)=.77714
+SIN@(52)=.78801
+SIN@(53)=.79863
+SIN@(54)=.80901
+SIN@(55)=.81915
+SIN@(56)=.82903
+SIN@(57)=.83867
+SIN@(58)=.84804
+SIN@(59)=.85716
+SIN@(60)=.86602
+SIN@(61)=.87461
+SIN@(62)=.88294
+SIN@(63)=.89100
+SIN@(64)=.89879
+SIN@(65)=.90630
+SIN@(66)=.91354
+SIN@(67)=.92050
+SIN@(68)=.92718
+SIN@(69)=.93358
+SIN@(70)=.93969
+SIN@(71)=.94551
+SIN@(72)=.95105
+SIN@(73)=.95630
+SIN@(74)=.96126
+SIN@(75)=.96592
+SIN@(76)=.97029
+SIN@(77)=.97437
+SIN@(78)=.97814
+SIN@(79)=.98162
+SIN@(80)=.98480
+SIN@(81)=.98768
+SIN@(82)=.99026
+SIN@(83)=.99254
+SIN@(84)=.99452
+SIN@(85)=.99619
+SIN@(86)=.99756
+SIN@(87)=.99862
+SIN@(88)=.99939
+SIN@(89)=.99984
+SIN@(90)=1
+
+screen 13
+largo=99
+xx1@=150
+yy1@=100
+while ang<=360
+        ang=ang+1
+        COL=col+1
+        if col>245 then
+                col=1
+        endif
+        gosub drawangul:
+rem if angulo=0 then
+rem        gosub pausa:
+rem endif
+rem if angulo=90 then
+rem        gosub pausa:
+rem endif
+
+wend
+
+END
+REM RUTINA QUE DIBUJA UNA LINEA EN ANGULO
+REM
+REM DATOS QUE HAY QUE PASARLE A LA RUTINA:
+REM XX1@=X COMIENZO; YY1@=Y COMIENZO; LARGO=LARGO LINEA
+REM COL=COLOR LINEA; ANG=ANGULO DE INCLINACION (0-360)
+DRAWANGUL:
+
+REM CALCULA LAS XX2@, YY2@
+        angulo=ang
+        GOSUB tablangulo:
+ 
+REM SENO
+        YY2@ = SIN2@ * LARGO
+REM COSENO
+        XX2@ = COS2@ * LARGO 
+        
+        YY2@ = YY1@ + YY2@
+        XX2@ = XX2@ + XX1@
+        
+        REM PASA LOS PARAMETROS A LA RUTINA LINEA:
+        X1=XX1@
+        Y1=YY1@
+        X2=XX2@
+        Y2=YY2@
+        X2=ABS(X2)
+        Y2=ABS(Y2)
+        X1=ABS(X1)
+        Y1=ABS(Y1)
+        GOSUB LINEA:
+
+RETURN
+REM ------------------------------
+
+rem -------RUTINAS COMPLEMENTARIAS----------------
+LINEA:
+REM dibuja una linea de x1,y1 a x2,y2 con color col
+REM afecta a las variables X y Y tambien!
+REM a las var: DIX,DIY,SIX,SIY,D,X,Y,X1,Y1,X2,Y2 tambien las modifica.
+REM dix, diy = distancia, d = desviacion,
+REM six, siy = signo de la distancia.
+    dix = x2 - x1
+    diy = y2 - y1
+    IF dix > 0 THEN
+        six = 1
+    ELSE
+        six = -1
+    ENDIF
+    IF diy > 0 THEN
+        siy = 1
+    ELSE
+        siy = -1
+    ENDIF
+
+    dix = ABS(dix)
+    diy = ABS(diy)
+    x = x1
+    y = y1
+    IF dix > diy THEN
+        REM (diy - dix) / 2
+        d = diy - dix
+        D = D / 2
+        WHILE x <> x2
+            PSET (y, x), col
+            IF d > 0 THEN
+                d = d - dix
+                y = y + siy
+            ENDIF
+          d = d + diy
+          x = x + six
+        WEND
+        PSET (y, x), col
+    ELSE
+        REM d = (dix - diy) / 2
+        d = dix - diy
+        D = D / 2
+
+        WHILE y <> y2
+            PSET (y, x), col
+            IF d > 0 THEN
+                 d = d - diy
+                 x = x + six
+            ENDIF
+          d = d + dix
+          y = y + siy
+        WEND
+        PSET (y, x), col
+    ENDIF
+RETURN
+
+REM --------
+tablangulo:
+REM Rutina que devuelve el SENO y COSENO para un angulo determinado.
+REM requiere el parametro angulo (0 a 360)
+
+cuadrante=1
+if angulo<0 then 
+        angulo=0
+endif
+if angulo>360 then 
+        angulo=360
+endif
+
+REM pasa el angulo al 1er cuadrante
+if angulo>=0 then
+if angulo<=90 then
+cuadrante=1
+        angulo=angulo
+endif
+endif
+if angulo>=91 then
+if angulo<=180 then
+cuadrante=2
+        angulo=180-angulo
+endif
+endif
+if angulo>=181 then
+if angulo<=270 then
+        cuadrante=3
+        angulo=angulo-180
+endif
+endif
+if angulo>=271 then
+if angulo<=360 then
+cuadrante=4
+        angulo=360-angulo
+endif
+endif
+REM ------        
+        cos2@=COS@(angulo)
+        sin2@=sin@(angulo)
+        
+        if cuadrante=1 then
+                SIN2@=-SIN2@
+                COS2@=abs(COS2@)
+        endif
+        
+        if cuadrante=2 then
+                SIN2@=-SIN2@
+                COS2@=-COS2@
+        endif
+        
+        if cuadrante=3 then
+                SIN2@=abs(SIN2@)
+                COS2@=-COS2@
+        endif
+        
+        if cuadrante=4 then
+                SIN2@=abs(SIN2@)
+                COS2@=abs(COS2@)
+        endif
+
+return
