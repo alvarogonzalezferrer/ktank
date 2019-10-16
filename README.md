@@ -50,5 +50,5 @@ F10 = salir inmediatamente del juego
 
 ![ScreenShot](/screenshots/5.jpg)
 
-![ScreenShot](/screenshots/6.jpg)
+
 
