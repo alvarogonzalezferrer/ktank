@@ -4,9 +4,11 @@ Creado por Kronoman
 
 En Memoria de mi querido padre
 
-Copyright (C) 2001, Kronoman
+Copyright (C) 2001-2020, Kronoman
 
 Re-lanzado en Octubre 2019
+
+Actualizado en Julio 2020
 
 *Software libre*
 
@@ -14,17 +16,25 @@ Re-lanzado en Octubre 2019
 
 Apuntar a los otros jugadores y eliminarlos.
 
-*Nota 2019*: Existio una version que permitia jugar contra la computadora tambien. Se perdio el codigo de la IA lamentablemente.
+## Novedades
+
+### 2020 
+* SE PUEDE JUGAR CONTRA LA COMPUTADORA TAMBIEN!
+* Version para Windows 64bits con QB64!
+
 
 ## Requerimientos:
 
-
+### MS-DOS
 * Un 286 con placa de Video EGA... 
 
 * No precisa disco rigido...
 
 * Un teclado, un amigo, y electricidad... ;^D
 
+### Windows
+
+* Un Windows 64 bits, como Windows 10
 
 ## Teclas de juego:
 
