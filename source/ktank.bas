@@ -16,7 +16,8 @@ DECLARE SUB CaerTanques ()
 DECLARE SUB DibujarTanques ()
 '------------------------------------------------------
 'Juego de 'accion' - Remake de un juego viejo
-'Hecho por Kronoman - (c) 2001, Licencia GNU - Gratuito
+'Hecho por Kronoman - (c) 2001-2020
+'Licencia GNU - Gratuito
 'En memoria de mi querido padre
 'Modo de juego:
 'Cada jugador hace un disparo e intenta pegarle al enemigo.
@@ -32,7 +33,7 @@ RANDOMIZE TIMER
 '------------------------------------------------------
 'Constantes
 '------------------------------------------------------
-CONST Version$ = "0.7á"
+CONST Version$ = "1.0.2020"
 '---------------
 'Trigonometria:
 '---------------
@@ -289,7 +290,7 @@ SCREEN 0
 WIDTH 80, 25
 PRINT "ERROR: -> "; ERR
 PRINT "Sorry macho..."
-PRINT "(c) 2001, Kronoman"
+PRINT "(c) 2001-2020, Kronoman"
 SYSTEM
 
 SUB BOX (X, Y, XX, YY, tipolinea)
@@ -323,8 +324,6 @@ SUB BOX (X, Y, XX, YY, tipolinea)
     LOCATE Y, XX: PRINT esq2$
     LOCATE YY, X: PRINT esq3$
     LOCATE YY, XX: PRINT esq4$
-
-
 
 END SUB
 
@@ -531,7 +530,7 @@ SUB Finalizar
     PRINT "KTank(r) " + Version$
     PRINT
     COLOR 14, 0
-    PRINT "Creado por Kronoman - (c) 2001 - Software Libre - Licencia GNU"
+    PRINT "Creado por Kronoman - (c) 2001-2020 - Software Libre - Licencia GNU"
     COLOR 8, 0
     PRINT "Para mas informacion sobre la licencia GNU, vea http://www.gnu.org/"
     PRINT
@@ -553,7 +552,8 @@ SUB Finalizar
     PRINT "ina"
     COLOR 7, 0
     PRINT
-    PRINT
+    PRINT "Presione una tecla para continuar..."
+    WHILE INKEY$ = "": WEND
     CLOSE
     SYSTEM
 END SUB
@@ -577,7 +577,7 @@ SUB GeneraFondo
         IF Y > 185 THEN yd = -ABS(yd)
 
         X = X + xd
-   
+
         Y = Y + yd
 
         IF Y > 185 THEN Y = 185
@@ -748,7 +748,7 @@ SUB VerSiPegoAlguien (Turno)
             'Si es alguna esquina, sacarle al azar
             Jugador(I).Ener = Jugador(I).Ener - (INT(RND * 25) + 10)
         END IF
-    
+
         IF POINT(X.Ang(CSNG(Jugador(I).X), CSNG(Jugador(I).Dcan), 6), Y.Ang(CSNG(Jugador(I).Y) - 2, CSNG(Jugador(I).Dcan), 6)) = 4 THEN
             'Si se pega en el ca¤or, sacarle %
             Jugador(I).Ener = Jugador(I).Ener - (INT(RND * 80) + 15)
@@ -774,7 +774,7 @@ SUB VerSiPegoAlguien (Turno)
             r1 = INT(RND * 5) + 10
             CIRCLE (Jugador(I).X, Jugador(I).Y), r1, 0
             PAINT (Jugador(I).X, Jugador(I).Y), 0, 0
-          
+
             CIRCLE (Jugador(I).X, Jugador(I).Y), r1, 4
             PAINT (Jugador(I).X, Jugador(I).Y), 4, 4
                
