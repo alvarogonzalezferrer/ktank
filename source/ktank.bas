@@ -143,15 +143,23 @@ DO
             '------ Loop del turno ------
             DO ' hasta que termine el turno
 
-
+				'--- INTELIGENCIA ARTIFICIAL ----
                 '2020
                 'Si el jugador es AI, computadora, toma el control del teclado
                 IF Jugador(Turno).AI = 1 THEN
-                    AI_accion = 5 ' SIEMPRE DISPARAR
+                    AIaccion = 5 ' SIEMPRE DISPARAR
+					
+					Jugador(Turno).Fail = Jugador(Turno).Fail + 1
+                    IF Jugador(Turno).Fail > 5 THEN ' si fallo muchos tiros, intentar de nuevo con otro enemigo
+                        Jugador(Turno).Fail = 0
+                        Jugador(Turno).Matar = INT(RND * CantJug) + 1
+                        Jugador(Turno).XL = -1
+                    END IF
 
                     ' el jugador que quiero matar esta muerto? elegir otro
+					' me elegi a mi mismo? elegir otro 
                     zzzz = 0 ' evito loop infinito
-                    WHILE Jugador(Jugador(Turno).Matar).Ener < 1 OR zzz > 10
+                    WHILE ((Jugador(Jugador(Turno).Matar).Ener < 1 OR Jugador(Turno).Matar = Turno) AND zzz < 20)
                         Jugador(Turno).Matar = INT(RND * CantJug) + 1
                         zzz = zzz + 1
                     WEND
@@ -174,7 +182,7 @@ DO
                     ELSE
                         'a mi izquierda
                         IF Jugador(Turno).XL = -1 THEN ' elegir angulo en el primer disparo
-                            Jugador(Turno).Dcan = INT(RND * 45) + 120
+                            Jugador(Turno).Dcan = 160 - INT(RND * 45)
                         ELSE
                             ' potencia disparo
                             IF Jugador(Turno).XL > Jugador(Jugador(Turno).Matar).X THEN
@@ -188,20 +196,10 @@ DO
                     IF Jugador(Turno).Pot < 7 THEN Jugador(Turno).Pot = INT(RND * 10) + 10
                     IF Jugador(Turno).Pot > 50 THEN Jugador(Turno).Pot = INT(RND * 30) + 20
 
-                    Jugador(Turno).Fail = Jugador(Turno).Fail + 1
-                    IF Jugador(Turno).Fail > 3 THEN ' si fallo muchos tiros, intentar de nuevo con otro enemigo
-                        Jugador(Turno).Fail = 0
-                        Jugador(Turno).Dcan = INT(RND * 170) + 10
-                        Jugador(Turno).Pot = INT(RND * 30) + 30
-                        Jugador(Turno).Matar = INT(rand * CantJug) + 1
-                        Jugador(Turno).XL = -1
-                    END IF
-
-
                 ELSE
-                    AI_accion = 0 ' es humano
+                    AIaccion = 0 ' es humano
                 END IF
-
+				' --- FIN INTELIGENCIA ARTIFICIAL ---
 
                 IF Redibujar <> 0 THEN
                     Redibujar = 0
@@ -225,7 +223,9 @@ DO
                     IF Jugador(Turno).AI = 0 THEN
                         CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 10
                     ELSE
-                        CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 12
+						' resaltar objetivo de la IA
+                        CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 2
+						'CIRCLE (Jugador(Jugador(Turno).Matar).X, Jugador(Jugador(Turno).Matar).Y), 12, 12
                     END IF
 
                 END IF
@@ -246,13 +246,13 @@ DO
                 IF D$ <> "" THEN Redibujar = 1
 
                 'Flechas: ARR, ABJ, +, - = potencia
-                IF D$ = CHR$(0) + "H" OR AI_accion = 1 THEN
+                IF D$ = CHR$(0) + "H" OR AIaccion = 1 THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot + 1
                     IF Jugador(Turno).Pot > 100 THEN Jugador(Turno).Pot = 100
                 END IF
 
-                IF D$ = CHR$(0) + "P" OR AI_accion = 2 THEN
+                IF D$ = CHR$(0) + "P" OR AIaccion = 2 THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot - 1
                     IF Jugador(Turno).Pot < 0 THEN Jugador(Turno).Pot = 0
@@ -272,13 +272,13 @@ DO
 
 
                 'Flechas: IZQ, DER, /,* = angulo
-                IF D$ = CHR$(0) + "K" OR AI_accion = 3 THEN
+                IF D$ = CHR$(0) + "K" OR AIaccion = 3 THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan + 1
                     IF Jugador(Turno).Dcan > 180 THEN Jugador(Turno).Dcan = 180
                 END IF
 
-                IF D$ = CHR$(0) + "M" OR AI_accion = 4 THEN
+                IF D$ = CHR$(0) + "M" OR AIaccion = 4 THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan - 1
                     IF Jugador(Turno).Dcan < 0 THEN Jugador(Turno).Dcan = 0
@@ -297,7 +297,7 @@ DO
                 END IF
 
                 'ENTER - disparar, ajustar y pasar el turno
-                IF D$ = CHR$(13) OR AI_accion = 5 THEN
+                IF D$ = CHR$(13) OR AIaccion = 5 THEN
                     PCOPY 3, 0 'restaurar pantalla
                     SCREEN 7, 0, 2, 0
                     CALL Disparar(X.Ang(CSNG(Jugador(Turno).X), CSNG(Jugador(Turno).Dcan), 6), Y.Ang(CSNG(Jugador(Turno).Y) - 2, CSNG(Jugador(Turno).Dcan), 6), CSNG(Jugador(Turno).Dcan), CSNG(Jugador(Turno).Pot), Turno)
