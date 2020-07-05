@@ -55,6 +55,14 @@ TYPE TankeJug
     Ener AS INTEGER 'Energia 0-100%; x<=0 muerto
     Punt AS LONG 'Puntos
     Nombre AS STRING * 8 'Nombre del jugador
+
+    '2020
+    'inteligencia
+    Matar AS INTEGER 'a quien quiero matar?
+    XL AS INTEGER 'donde cayo ultimo tiro? posicion X
+    YL AS INTEGER ' donde cayo ultimo tiro? posicion Y, no relevante por ahora, sobra
+    AI AS INTEGER ' es computadora 1 , o humano
+    Fail AS INTEGER ' cuantos tiros fallo? intenta otro angulo
 END TYPE
 
 '------------------------------
@@ -100,9 +108,8 @@ DO
     'Comienzo del round
     '------------------------------------------------------
 
-
     DO
-   
+
         '------------------------------------------------------
         'Mensaje inicio de nuevo round
         '------------------------------------------------------
@@ -111,12 +118,12 @@ DO
         CALL BOX(8, 9, 31, 11, 0)
         LOCATE 10, 9
         PRINT "COMENZANDO NUEVO ROUND"
-   
+
         '------------------------------------------------------
         'Iniciar fondo, etc
         '------------------------------------------------------
         CALL Iniciar
-   
+
         '------------------------------------------------------
         'Inicia los tanques
         '------------------------------------------------------
@@ -135,7 +142,67 @@ DO
             Redibujar = 1
             '------ Loop del turno ------
             DO ' hasta que termine el turno
-               
+
+
+                '2020
+                'Si el jugador es AI, computadora, toma el control del teclado
+                IF Jugador(Turno).AI = 1 THEN
+                    AI_accion = 5 ' SIEMPRE DISPARAR
+
+                    ' el jugador que quiero matar esta muerto? elegir otro
+                    zzzz = 0 ' evito loop infinito
+                    WHILE Jugador(Jugador(Turno).Matar).Ener < 1 OR zzz > 10
+                        Jugador(Turno).Matar = INT(RND * CantJug) + 1
+                        zzz = zzz + 1
+                    WEND
+
+                    'de que lado esta el enemigo
+                    IF Jugador(Turno).X < Jugador(Jugador(Turno).Matar).X THEN
+                        'a mi derecha
+
+                        IF Jugador(Turno).XL = -1 THEN ' elegir angulo en el primer disparo
+                            Jugador(Turno).Dcan = INT(RND * 45) + 15
+                        ELSE
+                            ' potencia disparo
+                            IF Jugador(Turno).XL < Jugador(Jugador(Turno).Matar).X THEN
+                                Jugador(Turno).Pot = Jugador(Turno).Pot + INT(RND * 10) + 2
+                            ELSE
+                                Jugador(Turno).Pot = Jugador(Turno).Pot - INT(RND * 10) - 2
+                            END IF
+                        END IF
+
+                    ELSE
+                        'a mi izquierda
+                        IF Jugador(Turno).XL = -1 THEN ' elegir angulo en el primer disparo
+                            Jugador(Turno).Dcan = INT(RND * 45) + 120
+                        ELSE
+                            ' potencia disparo
+                            IF Jugador(Turno).XL > Jugador(Jugador(Turno).Matar).X THEN
+                                Jugador(Turno).Pot = Jugador(Turno).Pot + INT(RND * 10) + 2
+                            ELSE
+                                Jugador(Turno).Pot = Jugador(Turno).Pot - INT(RND * 10) - 2
+                            END IF
+                        END IF
+                    END IF
+
+                    IF Jugador(Turno).Pot < 7 THEN Jugador(Turno).Pot = INT(RND * 10) + 10
+                    IF Jugador(Turno).Pot > 50 THEN Jugador(Turno).Pot = INT(RND * 30) + 20
+
+                    Jugador(Turno).Fail = Jugador(Turno).Fail + 1
+                    IF Jugador(Turno).Fail > 3 THEN ' si fallo muchos tiros, intentar de nuevo con otro enemigo
+                        Jugador(Turno).Fail = 0
+                        Jugador(Turno).Dcan = INT(RND * 170) + 10
+                        Jugador(Turno).Pot = INT(RND * 30) + 30
+                        Jugador(Turno).Matar = INT(rand * CantJug) + 1
+                        Jugador(Turno).XL = -1
+                    END IF
+
+
+                ELSE
+                    AI_accion = 0 ' es humano
+                END IF
+
+
                 IF Redibujar <> 0 THEN
                     Redibujar = 0
                     'Dibujar
@@ -146,45 +213,57 @@ DO
                     SCREEN 7, 0, 0, 0 '#0 = pantalla
                     PCOPY 1, 3 'Backup de pantalla en #3
                     PCOPY 1, 0 'Pantalla
-                   
+
                     LOCATE 25, 1
                     COLOR 15, 0
                     PRINT "Ang:" + STR$(Jugador(Turno).Dcan) + "-Vel:" + STR$(Jugador(Turno).Pot) + "-Ener:" + STR$(Jugador(Turno).Ener); "% - ";
                     COLOR ColTank(Turno), 0
                     PRINT Jugador(Turno).Nombre;
                     COLOR 15, 0
-                   
-                    'Resalta el jugador actual
-                    'CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 15
-                                       
+
+                    ' RESALTAR HUMANO
+                    IF Jugador(Turno).AI = 0 THEN
+                        CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 10
+                    ELSE
+                        CIRCLE (Jugador(Turno).X, Jugador(Turno).Y), 12, 12
+                    END IF
+
                 END IF
-           
+
                 'Teclado
                 D$ = INKEY$
+                D2$ = D$ ' permite salir aunque sea un robot el que juega
+
+                IF Jugador(Turno).AI = 1 THEN
+                    D$ = "" ' ANULAR CONTROL HUMANO SI ES AI
+
+                    pausa (1) ' DEJAR VER LO QUE HAGO
+                END IF
+
 
                 'Interpreta teclado:
 
                 IF D$ <> "" THEN Redibujar = 1
-               
+
                 'Flechas: ARR, ABJ, +, - = potencia
-                IF D$ = CHR$(0) + "H" THEN
+                IF D$ = CHR$(0) + "H" OR AI_accion = 1 THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot + 1
                     IF Jugador(Turno).Pot > 100 THEN Jugador(Turno).Pot = 100
                 END IF
-               
-                IF D$ = CHR$(0) + "P" THEN
+
+                IF D$ = CHR$(0) + "P" OR AI_accion = 2 THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot - 1
                     IF Jugador(Turno).Pot < 0 THEN Jugador(Turno).Pot = 0
                 END IF
-               
+
                 IF D$ = "+" THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot + 10
                     IF Jugador(Turno).Pot > 100 THEN Jugador(Turno).Pot = 100
                 END IF
-              
+
                 IF D$ = "-" THEN
                     'SOUND 100, .1
                     Jugador(Turno).Pot = Jugador(Turno).Pot - 10
@@ -193,24 +272,24 @@ DO
 
 
                 'Flechas: IZQ, DER, /,* = angulo
-                IF D$ = CHR$(0) + "K" THEN
+                IF D$ = CHR$(0) + "K" OR AI_accion = 3 THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan + 1
                     IF Jugador(Turno).Dcan > 180 THEN Jugador(Turno).Dcan = 180
                 END IF
-               
-                IF D$ = CHR$(0) + "M" THEN
+
+                IF D$ = CHR$(0) + "M" OR AI_accion = 4 THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan - 1
                     IF Jugador(Turno).Dcan < 0 THEN Jugador(Turno).Dcan = 0
                 END IF
-               
+
                 IF D$ = "/" THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan + 10
                     IF Jugador(Turno).Dcan > 180 THEN Jugador(Turno).Dcan = 180
                 END IF
-              
+
                 IF D$ = "*" THEN
                     'SOUND 500, .1
                     Jugador(Turno).Dcan = Jugador(Turno).Dcan - 10
@@ -218,7 +297,7 @@ DO
                 END IF
 
                 'ENTER - disparar, ajustar y pasar el turno
-                IF D$ = CHR$(13) THEN
+                IF D$ = CHR$(13) OR AI_accion = 5 THEN
                     PCOPY 3, 0 'restaurar pantalla
                     SCREEN 7, 0, 2, 0
                     CALL Disparar(X.Ang(CSNG(Jugador(Turno).X), CSNG(Jugador(Turno).Dcan), 6), Y.Ang(CSNG(Jugador(Turno).Y) - 2, CSNG(Jugador(Turno).Dcan), 6), CSNG(Jugador(Turno).Dcan), CSNG(Jugador(Turno).Pot), Turno)
@@ -226,23 +305,23 @@ DO
                 END IF
 
                 'F10 - Salir al toque
-                IF D$ = CHR$(0) + "D" THEN CALL Finalizar
+                IF D2$ = CHR$(0) + "D" THEN CALL Finalizar
 
             LOOP UNTIL FinTurno <> 0 'OR D$ = CHR$(27) '<ESC> salta el turno
-           
+
             'Cambiar turno
             DO
                 'Ver que al que le toca este vivo...
                 Turno = Turno + 1
                 IF Turno > CantJug THEN Turno = 1
-               
+
                 'Hasta que el jugador este vivo, o quede uno solo vivo
             LOOP UNTIL Jugador(Turno).Ener > 0 OR CuantosVivos <= 1
-            
+
 
         LOOP UNTIL CuantosVivos <= 1 'hasta que quede 1 o ninguno vivos... < DEBUG >
         'Fin Round
-       
+
         'Presentar puntajes
         SCREEN 7, 0, 0, 0
         CLS
@@ -308,8 +387,6 @@ SUB BOX (X, Y, XX, YY, tipolinea)
     IF tipolinea = 0 THEN ray1$ = "³": ray2$ = "Ä": esq1$ = "Ú": esq2$ = "¿": esq3$ = "À":: esq4$ = "Ù"
     IF tipolinea = 1 THEN ray1$ = "º": ray2$ = "Í": esq1$ = "É": esq2$ = "»": esq3$ = "È":: esq4$ = "¼"
     IF tipolinea = 2 THEN ray1$ = "Û": ray2$ = "Û": esq1$ = "Û": esq2$ = "Û": esq3$ = "Û":: esq4$ = "Û"
-
-
 
     FOR k = Y TO YY
         LOCATE k, X: PRINT SPACE$(XX - X) 'borrar
@@ -392,11 +469,10 @@ SUB Disparar (X, Y, ang, Vel, Turno)
     'realiza los graficos, y mata a los que toque
     'ademas, tira la tierra...
     'En Turno pasar el N§ del tanque que esta jugando
+    'Devuelve en XL, YL donde cayo la bala (para la IA) - 2020
     '--------------------------------------------
 
-
     PSET (X, Y), 1 'Evita un bug
-
 
     ang = ang * PI180
 
@@ -416,14 +492,11 @@ SUB Disparar (X, Y, ang, Vel, Turno)
     'termino??
     listo = 0
 
-
     'Pagina de video de backup en #3
-
-
 
     'repetir hasta que pase algo
     DO WHILE listo = 0
-  
+
         'calculo
         X = PosX + (XVel * t)
         Y = PosY + ((-1 * (YVel * t)) + (.5 * gravedad * t ^ 2))
@@ -431,6 +504,7 @@ SUB Disparar (X, Y, ang, Vel, Turno)
         'sonido
         s = ((480 - Y) * 10) + 37
         IF s < 37 THEN s = 37
+        IF s > 10000 THEN s = 10000
         SOUND s, .1
 
         'contador
@@ -440,13 +514,13 @@ SUB Disparar (X, Y, ang, Vel, Turno)
         IF Y > 190 THEN listo = 1
         IF X < 0 THEN listo = 1
         IF X > 320 THEN listo = 1
-       
+
         'Ver si pego con algo o el piso -> explotar...
         'Si la velocidad es < 2 tambien explota
         SCREEN 7, 0, 3, 0 'mira la pantalla
         IF (POINT(X, Y) > 0 AND POINT(X, Y) <> 4 AND POINT(X, Y) <> 1) OR Y > 189 OR Vel < 2 THEN
             'pego con algo... :^)
-           
+
             'Modificar entorno con la explosion
             SCREEN 7, 0, 2, 0
             'Borrar con cielo
@@ -454,19 +528,21 @@ SUB Disparar (X, Y, ang, Vel, Turno)
             PAINT (X, Y), 0, 0
             CIRCLE (X, Y), 7, 1
             PAINT (X, Y), 1, 1
-           
+
             'Explosion en pantalla
             SCREEN 7, 0, 0, 0
             PCOPY 3, 0
             'Dibujar explosion
             CIRCLE (X, Y), 7, 0
             PAINT (X, Y), 0, 0
-           
+
             CIRCLE (X, Y), 7, 4
             PAINT (X, Y), 4, 4
-               
+
             'sonido
             PLAY "mfl32o1 cbc o0 b p32"
+
+            pausa (.3) 'necesario para ver la explosion en compus modernas 2020
 
             'Analizar a quien le pego...
             CALL VerSiPegoAlguien(Turno)
@@ -474,13 +550,18 @@ SUB Disparar (X, Y, ang, Vel, Turno)
             listo = 1
 
         END IF
-       
+
         SCREEN 7, 0, 0, 0
         'dibuja balita
         PSET (X, Y), 4
         CIRCLE (X, Y), 1, 4
 
     LOOP
+    pausa (.5) 'necesario 2020 por velocidad maquinas
+
+    'para la IA , donde cayo la bala   - 2020
+    Jugador(Turno).XL = X
+    Jugador(Turno).YL = Y
 
     'Hacer caer la tierra suelta [dificil]
     SCREEN 7, 0, 2, 0
@@ -491,7 +572,7 @@ SUB Disparar (X, Y, ang, Vel, Turno)
     FOR XX = X - 10 TO X + 10
         EnElAire = 0 'Esta en el aire?
         YFall = Y + 10
-   
+
         FOR YY = Y + 10 TO 99 STEP -1
             'Va tomando el punto, y si no es tierra, setea que debe caer
             IF POINT(XX, YY) = 6 AND EnElAire = 0 THEN
@@ -553,7 +634,7 @@ SUB Finalizar
     COLOR 7, 0
     PRINT
     PRINT "Presione una tecla para continuar..."
-    WHILE INKEY$ = "": WEND
+    CALL pausa(0)
     CLOSE
     SYSTEM
 END SUB
@@ -609,7 +690,6 @@ SUB Iniciar
     PCOPY 1, 5
     PCOPY 1, 6
 
-
 END SUB
 
 SUB Menu1
@@ -632,11 +712,13 @@ SUB Menu1
     PLAY "MB MNT150L16O2GBGG>D<BB>DEL32FL8EEL4<G"
 
     PRINT "Cuantos jugadores? (2-10) "
-    PRINT "Ponga 0 para finalizar programa."
+    PRINT "Ponga 0 para finalizar."
     LINE INPUT j$
     IF j$ = "" THEN j$ = "2"
     CantJug = VAL(j$)
+    PRINT CantJug
     IF CantJug < 2 OR CantJug > 10 THEN CALL Finalizar
+
     FOR I = 1 TO CantJug
         LOCATE 7, 1
         PRINT "Nombre Jugador "; STR$(I)
@@ -645,12 +727,33 @@ SUB Menu1
         j$ = UCASE$(LTRIM$(RTRIM$(j$)))
         IF j$ = "" THEN j$ = "Jug:" + STR$(I)
         Jugador(I).Nombre = j$ 'LEFT$(8, j$)
+
+        PRINT "Es humano? S o N? "
+        DO
+            K$ = UCASE$(INKEY$)
+        LOOP UNTIL K$ = "S" OR K$ = "N"
+
+        IF UCASE$(K$) = "N" THEN
+            PRINT "Computadora"
+            Jugador(I).AI = 1
+            Jugador(I).XL = -1 ' primer disparo
+            Jugador(I).YL = -1
+            DO
+                Jugador(I).Matar = INT(RND * CantJug) + 1 'elegir objetivo para matar
+            LOOP WHILE (Jugador(I).Matar = I) ' no permitir elegirse a si mismo como objetivo
+
+        ELSE
+            PRINT "Humano"
+            Jugador(I).AI = 0 'humano
+        END IF
+
+
         COLOR ColTank(I), 0
         PRINT Jugador(I).Nombre
+        pausa (.2)
         COLOR 15, 0
-        pausa (.1)
         LOCATE 7, 1
-        PRINT SPACE$(160)
+        PRINT SPACE$(320)
     NEXT
 
     LOCATE 7, 1
@@ -707,8 +810,8 @@ SUB ResetearJugadores
         Jugador(I).Pot = 0
         Jugador(I).Ener = 0
         Jugador(I).Punt = 0
+        Jugador(I).XL = -1
     NEXT I
-
 END SUB
 
 SUB VerSiPegoAlguien (Turno)
@@ -753,15 +856,15 @@ SUB VerSiPegoAlguien (Turno)
             'Si se pega en el ca¤or, sacarle %
             Jugador(I).Ener = Jugador(I).Ener - (INT(RND * 80) + 15)
         END IF
-  
-   
+
+
         IF Jugador(I).Ener < 0 THEN
             Jugador(I).Ener = 0
         END IF
 
         IF Jugador(I).Ener <= 0 AND EstabaVivo = -1 THEN
             'Si estaba vivo y murio, explotar y sumar puntos
-       
+
             IF Turno <> I THEN
                 Jugador(Turno).Punt = Jugador(Turno).Punt + 1
             ELSE
@@ -777,7 +880,7 @@ SUB VerSiPegoAlguien (Turno)
 
             CIRCLE (Jugador(I).X, Jugador(I).Y), r1, 4
             PAINT (Jugador(I).X, Jugador(I).Y), 4, 4
-               
+
             PLAY "mf l32 o0 >bb < a c l8 c"
         END IF
 
@@ -794,7 +897,6 @@ FUNCTION X.Ang (X, Angulo, largo)
     'pasar a radianes y calcular
     X.Ang = INT(X + COS((360 - Angulo) * PI180) * largo)
 
-
 END FUNCTION
 
 FUNCTION Y.Ang (Y, Angulo, largo)
@@ -803,7 +905,6 @@ FUNCTION Y.Ang (Y, Angulo, largo)
     '-------------------------------------------------------------
     'pasar a radianes y calcular
     Y.Ang = INT(Y + SIN((360 - Angulo) * PI180) * largo)
-
 
 END FUNCTION
 
