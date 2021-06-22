@@ -1,5 +1,17 @@
 # KTank
 
+# English summary
+
+Tank artillery game, created in 2001, relaunched in 2019.
+
+Up to 10 players, AI players, released for MS-DOS and Windows 64 bits.
+
+DOS version with QBasic, Win64 version with QB64
+
+Enjoy retro fun! 
+
+# Español
+
 Creado por Kronoman
 
 En Memoria de mi querido padre
@@ -18,7 +30,7 @@ Apuntar a los otros jugadores y eliminarlos.
 
 ## Novedades
 
-### 2020 
+### 2020
 * SE PUEDE JUGAR CONTRA LA COMPUTADORA TAMBIEN!
 * Version para Windows 64bits con QB64!
 
@@ -65,7 +77,7 @@ ARR, ABJ = potencia de tiro, en incrementos de -1,+1
 
 -, + [teclado gris] = potencia de tiro, en incrementos de -10,+10
 
-F10 = salir inmediatamente del juego 
+F10 = salir inmediatamente del juego
 
 ## Screenshoots
 
@@ -78,6 +90,3 @@ F10 = salir inmediatamente del juego
 ![ScreenShot](/screenshots/4.jpg)
 
 ![ScreenShot](/screenshots/5.jpg)
-
-
-
