@@ -8,7 +8,7 @@ Up to 10 players, AI players, released for MS-DOS and Windows 64 bits.
 
 DOS version with QBasic, Win64 version with QB64
 
-Enjoy retro fun! 
+Enjoy retro fun!
 
 # Español
 
@@ -29,6 +29,10 @@ Actualizado en Julio 2020
 Apuntar a los otros jugadores y eliminarlos.
 
 ## Novedades
+
+### 2021
+
+* English info added
 
 ### 2020
 * SE PUEDE JUGAR CONTRA LA COMPUTADORA TAMBIEN!
