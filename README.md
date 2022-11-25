@@ -1,5 +1,17 @@
 # KTank
 
+## Screenshoots
+
+![ScreenShot](/screenshots/1.jpg)
+
+![ScreenShot](/screenshots/2.jpg)
+
+![ScreenShot](/screenshots/3.jpg)
+
+![ScreenShot](/screenshots/4.jpg)
+
+![ScreenShot](/screenshots/5.jpg)
+
 # English summary
 
 Tank artillery game, created in 2001, relaunched in 2019.
@@ -83,14 +95,4 @@ ARR, ABJ = potencia de tiro, en incrementos de -1,+1
 
 F10 = salir inmediatamente del juego
 
-## Screenshoots
 
-![ScreenShot](/screenshots/1.jpg)
-
-![ScreenShot](/screenshots/2.jpg)
-
-![ScreenShot](/screenshots/3.jpg)
-
-![ScreenShot](/screenshots/4.jpg)
-
-![ScreenShot](/screenshots/5.jpg)
